@@ -1,0 +1,5 @@
+ <h3> Total Amount:  <%= @order.calculate_amount %></h3>
+ <p>Order Details</p>
+ <% @order.order_items.select{|o| o.quantity && o.quantity > 0 }.each do |order_item| %>
+ <p> <%= order_item.quantity %> X <%= order_item.product.name %></p>
+ <% end %>

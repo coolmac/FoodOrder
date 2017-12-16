@@ -1,0 +1,76 @@
+<%= form_for @order, :html => { class: "form-horizontal order", id: "order_form" } do |f| %>
+
+<% if @order.errors.any? %>
+<div id="error_expl" class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title"><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h3>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <% @order.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>
+
+<div class="col-md-8">
+ <%= f.fields_for :order_items, @order.order_items do |order_item_fields| %>
+ <div class="form-group">
+   <% product = order_item_fields.object.product %>
+   <div class="col-lg-3">
+    <%=product.name %> <%= order_item_fields.hidden_field :product_id, value: product.id %>
+  </div>
+  <div class="col-lg-2">
+    <%=product.price %>
+  </div>
+
+  <div class="col-lg-5">
+   <%= order_item_fields.number_field :quantity, readonly: true, class: "numberincrement", min: "0", max: "100", step: "1" %>
+ </div>
+</div>
+<% end %>
+</div>
+
+<div class="col-md-4 panel panel-default">
+  <div class="form-group">
+    <%= f.label :address, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :address, :class => 'form-control', required: true %>
+    </div>
+    <%=f.error_span(:address) %>
+  </div>
+  <div class="form-group order_details">
+    <div id="price_and_details">
+     <h3> Total Amount:  <%= @order.calculate_amount %></h3>
+     <p>Order Details</p>
+      <% @order.order_items.select{|o| o.quantity && o.quantity > 0 }.each do |order_item| %>
+        <p> <%= order_item.quantity %> X <%= order_item.product.name %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+      orders_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+</div>
+
+<% end %>
+<%# console %>
+
+
+
+
+
+
+
+
+
+
+
+

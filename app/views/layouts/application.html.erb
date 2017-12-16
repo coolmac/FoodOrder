@@ -6,9 +6,46 @@
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'number' %>
   </head>
 
   <body>
-    <%= yield %>
+    <%= render 'shared/header' %>
+    <%= render 'shared/flash_message' %>
+    <div class="container">
+      <div class="row">
+      <%= yield %>
+      </div>
+      <hr>
+      <%= render 'shared/footer' %>
+    </div><!--/.container-->
+    <% console %>
+    <script type="text/javascript">
+
+$('input.numberincrement').each(function () {
+  $(this).number();
+});
+$("input.numberincrement").on('change keydown paste input', function(){
+  fetchFaredetails();
+  })
+function fetchFaredetails(){
+    var data = new FormData( $( 'form#order_form' )[ 0 ] );
+   // var data = new FormData(("order_form"));
+   // var data = $("form.order").serialize();
+   $.ajax( {
+      processData: false,
+      contentType: false,
+      data: data,
+      // dataType: 'text/html',
+      type: "post",
+      url: '<%= order_details_orders_path %>',
+      success: function(response){
+        // alert("succes");
+        console.log(response);
+         $("#price_and_details").html(response)
+      }
+});
+}
+    </script>
   </body>
 </html>
